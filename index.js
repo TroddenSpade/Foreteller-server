@@ -18,6 +18,7 @@ mongoose.connect(config.DATABASE,{
 });
 
 const {User} = require('./src/models/User');
+const {Poll} = require('./src/models/Poll');
 
 // GET
 app.get('/api/hi',(req,res)=>{
@@ -67,6 +68,22 @@ app.post('/api/checktoken',(req,res)=>{
         }else{
             res.json({valid:false});
         }
+    });
+});
+
+app.post('/api/createpoll',(req,res)=>{
+    const poll = new Poll(req.body);
+    poll.save((err,doc)=>{
+        if(err){
+            return res.status(400).json({
+                created:false,
+                err:err,
+            });
+        }
+        res.status(200).json({
+            created:true,
+            poll:doc
+        });
     });
 });
 

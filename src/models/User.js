@@ -35,6 +35,9 @@ const userSchema = mongoose.Schema({
     noPosts:{
         type:Number,
         default:0
+    },
+    polls:{
+        type: [{ type : mongoose.Schema.Types.ObjectId, ref: 'User' }],
     }
 });
 

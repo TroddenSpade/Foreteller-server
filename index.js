@@ -27,6 +27,31 @@ app.get('/api/hi',(req,res)=>{
     });
 });
 
+app.get('/api/getpolls',(req,res)=>{
+    const id = req.query.id;
+    Poll.find({ "_id": { "$lt": id } })
+    .populate('owner','username avatar')
+    .sort({_id:"desc"}).limit(10).exec((err,doc)=>{
+        if(err) return res.json({valid:false,err});
+        res.json({valid:true,polls:doc});
+    })
+});
+
+String.prototype.toObjectId = function() {
+    var ObjectId = (require('mongoose').Types.ObjectId);
+    return new ObjectId(this.toString());
+};
+
+app.get('/api/getmypolls',(req,res)=>{
+    const id = req.query.id;
+    const myid = req.query.myid;
+    Poll.find({ "_id": { "$lt": id } , owner : myid.toObjectId() })
+    .sort({_id:"desc"}).limit(10).exec((err,doc)=>{
+        if(err) return res.json({valid:false,err});
+        res.json({valid:true,polls:doc});
+    })
+});
+
 // POST
 app.post('/api/signup',(req,res)=>{
     const user = new User(req.body);
